@@ -24,7 +24,7 @@ from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import padding as asym_padding
 
 app = Flask(__name__)
-app.secret_key = "supersecret123"
+app.secret_key = "yourkey"
 
 # Add context processor for templates
 @app.context_processor
@@ -34,7 +34,7 @@ def inject_user():
     return {'current_user': None}
 
 # DB Config with connection pooling
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/data_int?charset=utf8mb4'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/"your_db"?charset=utf8mb4'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_recycle': 299,
@@ -62,15 +62,15 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # Remove in production
 os.environ['FLASK_DANCE_DEBUG'] = '1'
 
 github_blueprint = make_github_blueprint(
-    client_id='Ov23lidMhm8LJS4sFcpZ',
-    client_secret='727f5648477dc9cf70af289f52d8cbbb61ad8429',
+    client_id='yourid',
+    client_secret='yourid',
     redirect_to='github_callback'
 )
 app.register_blueprint(github_blueprint, url_prefix='/github_login')
 
 google_blueprint = make_google_blueprint(
-    client_id='165017491150-havs9c6ro1irushjj1j5bn797c62kjh3.apps.googleusercontent.com',
-    client_secret='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',
+    client_id='yourid',
+    client_secret='yourid',
     redirect_to='google_callback',
     scope=[
         "openid",
@@ -1272,6 +1272,6 @@ if __name__ == '__main__':
     app.run(
         debug=True,
         ssl_context=ssl_context,
-        host='127.0.0.1',
-        port=5000
+        host='0.0.0.0',
+        port="what ever you prefer"
     )
