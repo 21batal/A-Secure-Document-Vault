@@ -1,0 +1,10 @@
+flask
+flask-sqlalchemy
+flask-bcrypt
+flask-dance
+pymysql
+pyotp
+qrcode
+cryptography
+pyOpenSSL
+werkzeug 
