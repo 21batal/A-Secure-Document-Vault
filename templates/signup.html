@@ -1,0 +1,690 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up - SecureDocs{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #dc2626 0%, #0d9488 100%);
+        --secondary-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        --glass-bg: rgba(255, 255, 255, 0.95);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+        --input-bg: rgba(255, 255, 255, 0.9);
+        --input-border: rgba(220, 38, 38, 0.2);
+        --input-focus: rgba(220, 38, 38, 0.3);
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --success-color: #10b981;
+        --error-color: #ef4444;
+    }
+
+    .auth-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .auth-card {
+        max-width: 380px;
+        margin: 2rem auto;
+        padding: 1.8rem;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        box-shadow: var(--glass-shadow);
+        backdrop-filter: blur(10px);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .auth-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(31, 38, 135, 0.2);
+    }
+
+    .logo {
+        width: 85px;
+        height: 85px;
+        margin: 0 auto 2rem;
+        padding: 1.4rem;
+        background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+        border-radius: 24px;
+        box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .logo::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transform: translateX(-100%);
+        transition: transform 0.8s ease;
+    }
+
+    .logo::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+        opacity: 0;
+        transition: opacity 0.6s ease;
+    }
+
+    .logo:hover {
+        transform: scale(1.2) rotate(12deg);
+        box-shadow: 0 12px 35px rgba(220, 38, 38, 0.4);
+    }
+
+    .logo:hover::before {
+        transform: translateX(100%);
+    }
+
+    .logo:hover::after {
+        opacity: 1;
+    }
+
+    .logo i {
+        font-size: 2.5rem;
+        color: white;
+        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        position: relative;
+        z-index: 1;
+    }
+
+    .logo:hover i {
+        transform: scale(1.4);
+        filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+    }
+
+    @keyframes logoPulse {
+        0% {
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+        }
+        50% {
+            box-shadow: 0 12px 35px rgba(220, 38, 38, 0.4);
+        }
+        100% {
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+        }
+    }
+
+    .logo {
+        animation: logoPulse 3s ease-in-out infinite;
+    }
+
+    .auth-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 1.8rem;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+    }
+
+    .form-floating {
+        margin-bottom: 1.2rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .form-floating:hover {
+        transform: translateX(8px);
+    }
+
+    .form-floating > .form-control {
+        height: 48px;
+        padding: 0.9rem 1.2rem;
+        font-size: 0.95rem;
+        border-radius: 12px;
+        background: var(--input-bg);
+        border: 2px solid var(--input-border);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .form-floating > label {
+        padding: 0.9rem 1.2rem;
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .form-floating > .form-control:focus {
+        background: white;
+        border-color: var(--input-focus);
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.15);
+        transform: translateY(-3px);
+    }
+
+    .form-floating > .form-control:focus + label {
+        color: #dc2626;
+        transform: translateY(-0.7rem) scale(0.85);
+    }
+
+    .form-floating > .form-control:not(:placeholder-shown) + label {
+        transform: translateY(-0.7rem) scale(0.85);
+        color: var(--text-secondary);
+    }
+
+    .form-floating > .form-control::placeholder {
+        color: transparent;
+    }
+
+    .form-floating > .form-control:focus::placeholder {
+        color: var(--text-secondary);
+        opacity: 0.7;
+    }
+
+    .form-select {
+        height: 58px;
+        padding: 1.2rem 1.4rem;
+        font-size: 1.1rem;
+        border-radius: 16px;
+        background: var(--input-bg);
+        border: 2px solid var(--input-border);
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.2rem;
+        padding-right: 3rem;
+    }
+
+    .form-select:hover {
+        transform: translateX(12px);
+        border-color: rgba(220, 38, 38, 0.4);
+        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.1);
+    }
+
+    .form-select:focus {
+        background: white;
+        border-color: var(--input-focus);
+        box-shadow: 0 0 0 5px rgba(220, 38, 38, 0.2);
+        transform: translateY(-5px);
+        outline: none;
+    }
+
+    .form-select option {
+        padding: 1rem;
+        font-size: 1.1rem;
+        background: white;
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+    }
+
+    .form-select option:hover {
+        background: rgba(220, 38, 38, 0.1);
+    }
+
+    .form-select option:checked {
+        background: var(--primary-gradient);
+        color: white;
+    }
+
+    .role-select-container {
+        position: relative;
+        margin-bottom: 1.8rem;
+    }
+
+    .role-select-container::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--primary-gradient);
+        transform: scaleX(0);
+        transition: transform 0.5s ease;
+        transform-origin: left;
+    }
+
+    .role-select-container:hover::after {
+        transform: scaleX(1);
+    }
+
+    .role-select-container:focus-within::after {
+        transform: scaleX(1);
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 0.9rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-top: 1.2rem;
+        background: var(--primary-gradient);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+    }
+
+    .submit-btn:active {
+        transform: translateY(0);
+    }
+
+    .auth-footer {
+        margin-top: 1.8rem;
+        font-size: 0.95rem;
+        text-align: center;
+    }
+
+    .auth-footer a {
+        display: inline-block;
+        color: #dc2626;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.6rem 1.2rem;
+        border-radius: 12px;
+        background: rgba(220, 38, 38, 0.1);
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        margin-top: 0.8rem;
+        letter-spacing: 0.3px;
+        position: relative;
+        overflow: hidden;
+        font-size: 0.9rem;
+    }
+
+    .auth-footer a::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+    }
+
+    .auth-footer a:hover {
+        color: white;
+        background: var(--primary-gradient);
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.35);
+    }
+
+    .auth-footer a:hover::before {
+        transform: translateX(100%);
+    }
+
+    .auth-footer a:active {
+        transform: translateY(-1px) scale(0.98);
+    }
+
+    .password-requirements {
+        margin-top: 1.2rem;
+        padding: 1rem;
+        font-size: 0.9rem;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 12px;
+        border: 1px solid var(--input-border);
+    }
+
+    .password-requirements .requirement {
+        margin-bottom: 0.4rem;
+        gap: 0.5rem;
+        display: flex;
+        align-items: center;
+        color: var(--text-secondary);
+        transition: all 0.3s ease;
+    }
+
+    .password-requirements .requirement.valid {
+        color: var(--success-color);
+    }
+
+    .password-requirements .requirement i {
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+    }
+
+    .password-requirements .requirement.valid i {
+        color: var(--success-color);
+    }
+
+    .auth-divider {
+        margin: 1.8rem 0;
+        font-size: 0.95rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 45%;
+        height: 1px;
+        background: var(--input-border);
+    }
+
+    .auth-divider::before {
+        left: 0;
+    }
+
+    .auth-divider::after {
+        right: 0;
+    }
+
+    .oauth-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        margin: 2rem 0;
+    }
+
+    .oauth-btn {
+        width: 100%;
+        padding: 1rem 1.2rem;
+        font-size: 1rem;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
+        letter-spacing: 0.3px;
+    }
+
+    .oauth-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+    }
+
+    .oauth-btn:hover {
+        transform: translateY(-3px);
+    }
+
+    .oauth-btn:hover::before {
+        transform: translateX(100%);
+    }
+
+    .oauth-btn i {
+        font-size: 1.4rem;
+        transition: all 0.5s ease;
+    }
+
+    .oauth-btn:hover i {
+        transform: scale(1.3);
+    }
+
+    .github-btn {
+        background: #24292e;
+        color: white;
+        box-shadow: 0 4px 12px rgba(36, 41, 46, 0.25);
+    }
+
+    .github-btn:hover {
+        background: #2f363d;
+        box-shadow: 0 6px 20px rgba(36, 41, 46, 0.35);
+    }
+
+    .google-btn {
+        background: #4285f4;
+        color: white;
+        box-shadow: 0 4px 12px rgba(66, 133, 244, 0.25);
+    }
+
+    .google-btn:hover {
+        background: #357ae8;
+        box-shadow: 0 6px 20px rgba(66, 133, 244, 0.35);
+    }
+
+    .auth-decoration {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: var(--primary-gradient);
+        filter: blur(60px);
+        opacity: 0.1;
+        animation: float 8s ease-in-out infinite;
+        z-index: -1;
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    @media (max-width: 640px) {
+        .auth-card {
+            margin: 0.5rem;
+        }
+        
+        .auth-title {
+            font-size: 1.75rem;
+        }
+        
+        .auth-decoration {
+            width: 200px;
+            height: 200px;
+        }
+    }
+
+    .invalid-feedback {
+        display: none;
+        color: #dc2626;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        font-weight: 500;
+    }
+
+    .form-control.is-invalid {
+        border-color: #dc2626;
+        background-image: none;
+    }
+
+    .form-control.is-valid {
+        border-color: #10b981;
+        background-image: none;
+    }
+
+    .form-control.is-invalid:focus {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 0.25rem rgba(220, 38, 38, 0.25);
+    }
+
+    .form-control.is-valid:focus {
+        border-color: #10b981;
+        box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-decoration decoration-1"></div>
+    <div class="auth-decoration decoration-2"></div>
+    <div class="auth-decoration decoration-3"></div>
+    
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1>Create Account</h1>
+            <p>Join us to secure your documents</p>
+        </div>
+
+        <div class="auth-form">
+            <form method="POST" action="{{ url_for('signup') }}">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                    <label for="username">Username</label>
+                </div>
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                    <label for="email">Email address</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                    <label for="password">Password</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+                    <label for="confirm_password">Confirm Password</label>
+                    <div class="invalid-feedback" id="password-match-error">
+                        Passwords do not match!
+                    </div>
+                </div>
+                <div class="form-floating role-select-container">
+                    <select class="form-select" id="role" name="role" required>
+                        <option value="" disabled selected>Select Role</option>
+                        <option value="2">User</option>
+                        <option value="1">Admin</option>
+                    </select>
+                    <label for="role">Role</label>
+                </div>
+
+                <div class="password-requirements">
+                    <div class="requirement" id="length">
+                        <i class="fas fa-circle"></i>
+                        <span>At least 8 characters</span>
+                    </div>
+                    <div class="requirement" id="uppercase">
+                        <i class="fas fa-circle"></i>
+                        <span>One uppercase letter</span>
+                    </div>
+                    <div class="requirement" id="lowercase">
+                        <i class="fas fa-circle"></i>
+                        <span>One lowercase letter</span>
+                    </div>
+                    <div class="requirement" id="number">
+                        <i class="fas fa-circle"></i>
+                        <span>One number</span>
+                    </div>
+                    <div class="requirement" id="special">
+                        <i class="fas fa-circle"></i>
+                        <span>One special character</span>
+                    </div>
+                </div>
+
+                <div class="auth-divider">
+                    <span>or continue with</span>
+                </div>
+
+                <div class="oauth-buttons">
+                    <a href="{{ url_for('github.login') }}" class="oauth-btn github-btn">
+                        <i class="fab fa-github"></i>
+                        <span>Continue with GitHub</span>
+                    </a>
+                    <a href="{{ url_for('google.login') }}" class="oauth-btn google-btn">
+                        <i class="fab fa-google"></i>
+                        <span>Continue with Google</span>
+                    </a>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <span>Create Account</span>
+                </button>
+            </form>
+        </div>
+
+        <div class="auth-footer">
+            Already have an account? <a href="{{ url_for('login') }}">Sign in</a>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('password').addEventListener('input', function(e) {
+    const password = e.target.value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    
+    // Length check
+    document.getElementById('length').classList.toggle('valid', password.length >= 8);
+    
+    // Uppercase check
+    document.getElementById('uppercase').classList.toggle('valid', /[A-Z]/.test(password));
+    
+    // Lowercase check
+    document.getElementById('lowercase').classList.toggle('valid', /[a-z]/.test(password));
+    
+    // Number check
+    document.getElementById('number').classList.toggle('valid', /[0-9]/.test(password));
+    
+    // Special character check
+    document.getElementById('special').classList.toggle('valid', /[!@#$%^&*(),.?":{}|<>]/.test(password));
+
+    // Password match check
+    if (confirmPassword) {
+        validatePasswordMatch(password, confirmPassword);
+    }
+});
+
+document.getElementById('confirm_password').addEventListener('input', function(e) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = e.target.value;
+    validatePasswordMatch(password, confirmPassword);
+});
+
+function validatePasswordMatch(password, confirmPassword) {
+    const confirmInput = document.getElementById('confirm_password');
+    const errorMessage = document.getElementById('password-match-error');
+    
+    if (password !== confirmPassword) {
+        confirmInput.classList.add('is-invalid');
+        confirmInput.classList.remove('is-valid');
+        errorMessage.style.display = 'block';
+    } else {
+        confirmInput.classList.remove('is-invalid');
+        confirmInput.classList.add('is-valid');
+        errorMessage.style.display = 'none';
+    }
+}
+
+// Form submission validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    
+    if (password !== confirmPassword) {
+        e.preventDefault();
+        alert('Passwords do not match! Please make sure both passwords are the same.');
+        document.getElementById('confirm_password').focus();
+    }
+});
+</script>
+{% endblock %}

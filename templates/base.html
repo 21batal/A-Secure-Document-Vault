@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Secure Document Management{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        /* Modern Dynamic CSS Design */
+        :root {
+            --primary-color: #dc2626;
+            --primary-dark: #991b1b;
+            --primary-light: #ef4444;
+            --secondary-color: #f8fafc;
+            --accent-color: #0d9488;
+            --text-color: #1e293b;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+            --gradient-primary: linear-gradient(135deg, #dc2626 0%, #0d9488 100%);
+            --gradient-hover: linear-gradient(135deg, #0d9488 0%, #dc2626 100%);
+        }
+
+        /* Base Styles with Modern Effects */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(220, 38, 38, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(13, 148, 136, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        /* Container Styles */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Enhanced Card Styles with Glass Morphism */
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--glass-shadow);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--gradient-primary);
+            animation: gradientFlow 3s ease-in-out infinite;
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            background: none;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        /* Enhanced Form Styles */
+        .form-control {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            transition: all 0.3s ease;
+            background: var(--glass-bg);
+            font-size: 0.95rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        /* Enhanced Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.95rem;
+            border: none;
+            background: var(--gradient-primary);
+            background-size: 200% 100%;
+            color: white;
+            box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-hover);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: -100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: 0.6s;
+            z-index: 2;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(15, 118, 110, 0.3);
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        .btn:hover::after {
+            left: 100%;
+        }
+
+        .btn:active {
+            transform: translateY(1px) scale(0.98);
+        }
+
+        /* Specific Button Styles with Unique Colors */
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-info:hover {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+            color: #1f2937;
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
+        }
+
+        /* Navigation Button Specific Styles */
+        .nav-link[href*="home"] {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.2) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .nav-link[href*="home"]:hover {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.3) 100%);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .nav-link[href*="documents"] {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.2) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .nav-link[href*="documents"]:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.3) 100%);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .nav-link[href*="admin_dashboard"] {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.2) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .nav-link[href*="admin_dashboard"]:hover {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0.3) 100%);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .nav-link[href*="suspicious_activity"] {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.2) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .nav-link[href*="suspicious_activity"]:hover {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.3) 100%);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .nav-link[href*="profile"] {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.2) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .nav-link[href*="profile"]:hover {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.3) 100%);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .nav-link[href*="settings"] {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(14, 165, 233, 0.2) 100%);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+
+        .nav-link[href*="settings"]:hover {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(14, 165, 233, 0.3) 100%);
+            border-color: rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-link[href*="logout"] {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.2) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .nav-link[href*="logout"]:hover {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.3) 100%);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        /* Dropdown Menu Item Colors */
+        .dropdown-item[href*="profile"] {
+            color: #8b5cf6;
+        }
+
+        .dropdown-item[href*="profile"]:hover {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.2) 100%);
+        }
+
+        .dropdown-item[href*="settings"] {
+            color: #0ea5e9;
+        }
+
+        .dropdown-item[href*="settings"]:hover {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(14, 165, 233, 0.2) 100%);
+        }
+
+        .dropdown-item[href*="logout"] {
+            color: #ef4444;
+        }
+
+        .dropdown-item[href*="logout"]:hover {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.2) 100%);
+        }
+
+        /* Icon Colors */
+        .nav-link[href*="home"] i { color: #10b981; }
+        .nav-link[href*="documents"] i { color: #3b82f6; }
+        .nav-link[href*="admin_dashboard"] i { color: #f59e0b; }
+        .nav-link[href*="suspicious_activity"] i { color: #ef4444; }
+        .nav-link[href*="profile"] i { color: #8b5cf6; }
+        .nav-link[href*="settings"] i { color: #0ea5e9; }
+        .nav-link[href*="logout"] i { color: #ef4444; }
+
+        /* Login/Register Buttons */
+        .nav-link[href*="login"] {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.2) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .nav-link[href*="login"]:hover {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.3) 100%);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .nav-link[href*="signup"] {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.2) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .nav-link[href*="signup"]:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.3) 100%);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .nav-link[href*="login"] i { color: #10b981; }
+        .nav-link[href*="signup"] i { color: #3b82f6; }
+
+        /* Enhanced Navigation Styles */
+        .navbar {
+            background: var(--gradient-primary);
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.2);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.4rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .navbar-brand:hover {
+            transform: translateY(-2px);
+            background: rgba(220, 38, 38, 0.2);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .navbar-brand i {
+            margin-right: 0.4rem;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover i {
+            transform: rotate(15deg);
+            color: #ff4d4d;
+        }
+
+        /* Dashboard Link */
+        .nav-link[href*="home"] {
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .nav-link[href*="home"]:hover {
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .nav-link[href*="home"]:hover i {
+            color: #10b981;
+        }
+
+        /* Documents Link */
+        .nav-link[href*="documents"] {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .nav-link[href*="documents"]:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .nav-link[href*="documents"]:hover i {
+            color: #3b82f6;
+        }
+
+        /* Admin Panel Link */
+        .nav-link[href*="admin_dashboard"] {
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .nav-link[href*="admin_dashboard"]:hover {
+            background: rgba(245, 158, 11, 0.2);
+        }
+
+        .nav-link[href*="admin_dashboard"]:hover i {
+            color: #f59e0b;
+        }
+
+        /* Suspicious Activity Link */
+        .nav-link[href*="suspicious_activity"] {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .nav-link[href*="suspicious_activity"]:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .nav-link[href*="suspicious_activity"]:hover i {
+            color: #ef4444;
+        }
+
+        /* Login Link */
+        .nav-link[href*="login"] {
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .nav-link[href*="login"]:hover {
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        .nav-link[href*="login"]:hover i {
+            color: #8b5cf6;
+        }
+
+        /* Register Link */
+        .nav-link[href*="signup"] {
+            background: rgba(236, 72, 153, 0.1);
+        }
+
+        .nav-link[href*="signup"]:hover {
+            background: rgba(236, 72, 153, 0.2);
+        }
+
+        .nav-link[href*="signup"]:hover i {
+            color: #ec4899;
+        }
+
+        /* Dropdown Menu Items */
+        .dropdown-item[href*="profile"]:hover {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .dropdown-item[href*="profile"]:hover i {
+            color: #10b981;
+        }
+
+        .dropdown-item[href*="settings"]:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .dropdown-item[href*="settings"]:hover i {
+            color: #3b82f6;
+        }
+
+        .dropdown-item[href*="logout"]:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .dropdown-item[href*="logout"]:hover i {
+            color: #ef4444;
+        }
+
+        /* Base Nav Link Styles */
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            margin: 0 0.2rem;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            font-size: 0.9rem;
+            z-index: 1;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
+            transform: translateX(-100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: -1;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            transform: scaleX(0);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-link i {
+            margin-right: 0.4rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-link:hover::before {
+            transform: translateX(0);
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
+        }
+
+        .nav-link:hover i {
+            transform: scale(1.2) rotate(10deg);
+            color: #ff4d4d;
+        }
+
+        /* Enhanced Dropdown Menu */
+        .dropdown-menu {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            box-shadow: var(--glass-shadow);
+            backdrop-filter: blur(10px);
+            padding: 0.6rem;
+            margin-top: 0.4rem;
+            animation: fadeIn 0.3s ease-out;
+            min-width: 200px;
+            transform-origin: top;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dropdown-item {
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            color: var(--text-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropdown-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: -1;
+        }
+
+        .dropdown-item i {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1rem;
+        }
+
+        .dropdown-item:hover {
+            transform: translateX(5px);
+            background: transparent;
+        }
+
+        .dropdown-item:hover::before {
+            transform: translateX(0);
+        }
+
+        .dropdown-item:hover i {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        /* Specific Link Hover Effects */
+        .nav-link[href*="home"]:hover {
+            background: linear-gradient(45deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.3));
+        }
+
+        .nav-link[href*="documents"]:hover {
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.3));
+        }
+
+        .nav-link[href*="admin_dashboard"]:hover {
+            background: linear-gradient(45deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.3));
+        }
+
+        .nav-link[href*="suspicious_activity"]:hover {
+            background: linear-gradient(45deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.3));
+        }
+
+        .nav-link[href*="profile"]:hover {
+            background: linear-gradient(45deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.3));
+        }
+
+        .nav-link[href*="settings"]:hover {
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.3));
+        }
+
+        .nav-link[href*="logout"]:hover {
+            background: linear-gradient(45deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.3));
+        }
+
+        /* Dropdown Toggle Animation */
+        .dropdown-toggle::after {
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-toggle:hover::after {
+            transform: rotate(180deg);
+        }
+
+        /* Enhanced Animations */
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(-10px) scale(0.95);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Navigation */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.1rem;
+                padding: 0.3rem 0.6rem;
+            }
+
+            .nav-link {
+                padding: 0.4rem 0.6rem;
+                margin: 0.2rem 0;
+                font-size: 0.85rem;
+            }
+
+            .dropdown-menu {
+                border: none;
+                box-shadow: none;
+                background: transparent;
+            }
+
+            .dropdown-item {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Enhanced Loading Animation */
+        .loading {
+            position: relative;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            top: 50%;
+            left: 50%;
+            margin: -12px 0 0 -12px;
+            border: 3px solid var(--primary-light);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Enhanced Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-color);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-primary);
+            border-radius: 5px;
+            border: 2px solid var(--secondary-color);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gradient-hover);
+        }
+
+        /* Enhanced Animations */
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* Back Button Styles */
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.2) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-right: 1rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            font-size: 0.9rem;
+            z-index: 1;
+        }
+
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
+            transform: translateX(-100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: -1;
+        }
+
+        .back-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            transform: scaleX(0);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.3) 100%);
+            border-color: rgba(139, 92, 246, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn:hover::before {
+            transform: translateX(0);
+        }
+
+        .back-btn:hover::after {
+            transform: scaleX(1);
+        }
+
+        .back-btn i {
+            font-size: 1.1rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+            color: #8b5cf6;
+        }
+
+        .back-btn:hover i {
+            transform: scale(1.2) rotate(10deg);
+            color: #a78bfa;
+        }
+
+        .back-btn span {
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .back-btn span {
+                display: none;
+            }
+            
+            .back-btn {
+                padding: 0.4rem;
+                border-radius: 50%;
+            }
+            
+            .back-btn i {
+                margin: 0;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <i class="fas fa-shield-alt"></i> SecureDocs
+            </a>
+            
+          
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    {% if session.get('user_id') %}
+                        {% if request.endpoint != 'home' %}
+                        <li class="nav-item">
+                            <a class="nav-link back-nav-link" href="{{ url_for('home') }}" title="Back to Dashboard">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('home') }}">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('documents') }}">
+                                <i class="fas fa-folder"></i> Documents
+                            </a>
+                        </li>
+                        {% if current_user and current_user.has_role('Admin') %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                                    <i class="fas fa-tools"></i> Admin Panel
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('suspicious_activity') }}">
+                                    <i class="fas fa-exclamation-triangle"></i> Suspicious Activity
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if session.get('user_id') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('profile') }}">
+                                <i class="fas fa-user-circle"></i> Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('settings') }}">
+                                <i class="fas fa-cog"></i> Settings
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown d-none d-lg-block">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user"></i> {{ session.get('username') }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{{ url_for('profile') }}">
+                                    <i class="fas fa-user-circle"></i> Profile
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('settings') }}">
+                                    <i class="fas fa-cog"></i> Settings
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login') }}">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('signup') }}">
+                                <i class="fas fa-user-plus"></i> Register
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <main class="container py-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3">
+        <div class="container text-center">
+            <span class="text-muted">© 2024 SecureDocs. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

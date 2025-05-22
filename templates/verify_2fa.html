@@ -1,0 +1,588 @@
+{% extends "base.html" %}
+
+{% block title %}Verify 2FA{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+        --gradient-hover: linear-gradient(135deg, #3b82f6 0%, #0ea5e9 100%);
+        --gradient-glow: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%);
+        --glass-bg: rgba(255, 255, 255, 0.98);
+        --glass-border: rgba(255, 255, 255, 0.3);
+        --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        --text-color: #1f2937;
+        --text-light: #6b7280;
+        --danger-color: #ef4444;
+        --success-color: #10b981;
+        --border-color: #e5e7eb;
+        --neon-glow: 0 0 20px rgba(14, 165, 233, 0.3);
+        
+        /* Store button colors */
+        --google-play-color: #00dc82;
+        --app-store-color: #007AFF;
+    }
+
+    .verify-container {
+        max-width: 500px;
+        margin: 2rem auto;
+        padding: 2.5rem;
+        text-align: center;
+        background: var(--glass-bg);
+        border-radius: 24px;
+        box-shadow: var(--glass-shadow);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
+        animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        transform-style: preserve-3d;
+        perspective: 1000px;
+    }
+
+    .verify-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-primary);
+        animation: gradientFlow 3s linear infinite;
+        filter: drop-shadow(0 0 8px rgba(14, 165, 233, 0.3));
+    }
+
+    .verify-container::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: var(--gradient-glow);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: -1;
+        filter: blur(20px);
+    }
+
+    .verify-container:hover::after {
+        opacity: 1;
+    }
+
+    .verify-header {
+        margin-bottom: 2.5rem;
+        color: var(--text-color);
+        font-size: 2.2rem;
+        font-weight: 800;
+        position: relative;
+        display: inline-block;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transform: translateZ(20px);
+    }
+
+    .verify-header::after {
+        content: '';
+        position: absolute;
+        bottom: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: var(--gradient-primary);
+        border-radius: 4px;
+        animation: expandWidth 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        filter: drop-shadow(0 0 8px rgba(14, 165, 233, 0.3));
+    }
+
+    .store-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin: 2.5rem 0;
+        flex-wrap: wrap;
+        animation: fadeIn 0.8s ease-out 0.3s both;
+        transform: translateZ(10px);
+    }
+
+    .store-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 1rem 1.8rem;
+        border-radius: 16px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--glass-shadow);
+        position: relative;
+        overflow: hidden;
+        transform: translateZ(0);
+    }
+
+    .store-button.google-play {
+        background: var(--google-play-color);
+        color: white;
+    }
+
+    .store-button.app-store {
+        background: var(--app-store-color);
+        color: white;
+    }
+
+    .store-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 0;
+    }
+
+    .store-button.google-play::before {
+        background: linear-gradient(135deg, #00dc82 0%, #00b36b 100%);
+    }
+
+    .store-button.app-store::before {
+        background: linear-gradient(135deg, #007AFF 0%, #0055b3 100%);
+    }
+
+    .store-button::after {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 18px;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: -1;
+        filter: blur(8px);
+    }
+
+    .store-button.google-play::after {
+        background: var(--google-play-color);
+    }
+
+    .store-button.app-store::after {
+        background: var(--app-store-color);
+    }
+
+    .store-button:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .store-button:hover::before,
+    .store-button:hover::after {
+        opacity: 1;
+    }
+
+    .store-button i {
+        font-size: 1.8rem;
+        position: relative;
+        z-index: 1;
+        transition: transform 0.4s ease;
+    }
+
+    .store-button:hover i {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .store-button .store-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        line-height: 1.2;
+        position: relative;
+        z-index: 1;
+    }
+
+    .store-button .store-label {
+        font-size: 0.75rem;
+        opacity: 0.9;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .store-button .store-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    .qr-container {
+        position: relative;
+        width: 280px;
+        height: 280px;
+        margin: 2.5rem auto;
+        padding: 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: float 4s ease-in-out infinite;
+        transform-style: preserve-3d;
+        perspective: 1000px;
+    }
+
+    .qr-container:hover {
+        transform: translateY(-8px) scale(1.03) rotateX(5deg);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+    }
+
+    .qr-code {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 12px;
+        transition: transform 0.4s ease;
+        transform: translateZ(20px);
+    }
+
+    .qr-container:hover .qr-code {
+        transform: translateZ(30px) scale(1.02);
+    }
+
+    .qr-container::before {
+        content: '';
+        position: absolute;
+        top: -3px;
+        left: -3px;
+        right: -3px;
+        bottom: -3px;
+        background: var(--gradient-primary);
+        border-radius: 23px;
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        filter: blur(8px);
+    }
+
+    .qr-container:hover::before {
+        opacity: 1;
+    }
+
+    .otp-form {
+        margin-top: 2.5rem;
+        animation: fadeIn 0.8s ease-out 0.6s both;
+        transform: translateZ(10px);
+    }
+
+    .otp-input {
+        width: 100%;
+        max-width: 320px;
+        padding: 1.2rem;
+        margin: 1.2rem auto;
+        border: 2px solid var(--border-color);
+        border-radius: 16px;
+        font-size: 1.3rem;
+        text-align: center;
+        letter-spacing: 0.6rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        background: var(--glass-bg);
+        color: var(--text-color);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transform: translateZ(0);
+    }
+
+    .otp-input:focus {
+        outline: none;
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15), var(--neon-glow);
+        transform: translateY(-3px) translateZ(10px);
+    }
+
+    .verify-button {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 1.2rem 2.5rem;
+        border: none;
+        border-radius: 16px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        margin-top: 1.5rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        box-shadow: 0 8px 20px rgba(14, 165, 233, 0.2);
+        transform: translateZ(0);
+    }
+
+    .verify-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--gradient-hover);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+
+    .verify-button::after {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        background: var(--gradient-primary);
+        border-radius: 18px;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: -1;
+        filter: blur(8px);
+    }
+
+    .verify-button:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 12px 24px rgba(14, 165, 233, 0.3), var(--neon-glow);
+    }
+
+    .verify-button:hover::before,
+    .verify-button:hover::after {
+        opacity: 1;
+    }
+
+    .verify-button i {
+        position: relative;
+        z-index: 1;
+        font-size: 1.3rem;
+        transition: transform 0.4s ease;
+    }
+
+    .verify-button:hover i {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .verify-button span {
+        position: relative;
+        z-index: 1;
+    }
+
+    .timer {
+        margin-top: 1.5rem;
+        font-size: 1rem;
+        color: var(--text-light);
+        animation: pulse 2s infinite;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transform: translateZ(5px);
+    }
+
+    .timer i {
+        font-size: 1.2rem;
+        animation: spin 4s linear infinite;
+    }
+
+    @keyframes gradientFlow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes expandWidth {
+        from { width: 0; }
+        to { width: 60px; }
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0px) rotateX(0deg); }
+        50% { transform: translateY(-12px) rotateX(2deg); }
+        100% { transform: translateY(0px) rotateX(0deg); }
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-30px) translateZ(0);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) translateZ(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px) translateZ(0);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) translateZ(0);
+        }
+    }
+
+    @keyframes pulse {
+        0% { opacity: 0.7; }
+        50% { opacity: 1; }
+        100% { opacity: 0.7; }
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .error-message {
+        color: var(--danger-color);
+        margin-top: 1.5rem;
+        padding: 1rem;
+        border-radius: 12px;
+        background: rgba(239, 68, 68, 0.1);
+        animation: shake 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        transform: translateZ(5px);
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-8px); }
+        75% { transform: translateX(8px); }
+    }
+
+    .success-message {
+        color: var(--success-color);
+        margin-top: 1.5rem;
+        padding: 1rem;
+        border-radius: 12px;
+        background: rgba(16, 185, 129, 0.1);
+        animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        transform: translateZ(5px);
+    }
+
+    @media (max-width: 480px) {
+        .verify-container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+
+        .verify-header {
+            font-size: 1.8rem;
+        }
+
+        .store-buttons {
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .store-button {
+            width: 100%;
+            max-width: 300px;
+            justify-content: center;
+        }
+
+        .qr-container {
+            width: 240px;
+            height: 240px;
+            padding: 15px;
+        }
+
+        .otp-input {
+            font-size: 1.1rem;
+            padding: 1rem;
+        }
+
+        .verify-button {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="verify-container">
+    <h2 class="verify-header">Two-Factor Authentication</h2>
+    
+    <div class="store-buttons">
+        <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" 
+           target="_blank" 
+           class="store-button google-play">
+            <i class="fab fa-google-play"></i>
+            <div class="store-info">
+                <span class="store-label">GET IT ON</span>
+                <span class="store-name">Google Play</span>
+            </div>
+        </a>
+        
+        <a href="https://apps.apple.com/app/google-authenticator/id388497605" 
+           target="_blank" 
+           class="store-button app-store">
+            <i class="fab fa-app-store-ios"></i>
+            <div class="store-info">
+                <span class="store-label">Download on the</span>
+                <span class="store-name">App Store</span>
+            </div>
+        </a>
+    </div>
+    
+    <div class="qr-container">
+        <img class="qr-code" src="data:image/png;base64,{{ qr_code }}" alt="QR Code">
+    </div>
+    
+    <form method="POST" class="otp-form">
+        <input type="text" 
+               name="otp" 
+               class="otp-input" 
+               placeholder="Enter 6-digit code" 
+               pattern="[0-9]{6}" 
+               maxlength="6" 
+               required 
+               autocomplete="off"
+               autofocus>
+        
+        <button type="submit" class="verify-button">
+            <i class="fas fa-shield-alt"></i>
+            <span>Verify Code</span>
+        </button>
+    </form>
+
+    <div class="timer">
+        <i class="fas fa-clock"></i> Code refreshes in <span id="countdown">30</span>s
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="{{ category }}-message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<script>
+    // Countdown timer
+    let timeLeft = 30;
+    const countdownElement = document.getElementById('countdown');
+    
+    const countdown = setInterval(() => {
+        timeLeft--;
+        countdownElement.textContent = timeLeft;
+        
+        if (timeLeft <= 0) {
+            timeLeft = 30;
+            countdownElement.textContent = timeLeft;
+        }
+    }, 1000);
+
+    // Input formatting
+    const otpInput = document.querySelector('.otp-input');
+    otpInput.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value.length === 6) {
+            this.form.submit();
+        }
+    });
+</script>
+{% endblock %}

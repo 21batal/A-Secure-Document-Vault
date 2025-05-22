@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Admin Dashboard</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>User Management</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" placeholder="Type here to search" id="searchInput">
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.role.name }}</td>
+                                    <td>
+                                        {% if user.id != session['user_id'] %}
+                                            <div class="action-buttons">
+                                                <a href="{{ url_for('admin_edit_user', user_id=user.id) }}" class="action-btn edit-btn" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                {% if user.role.name == 'User' %}
+                                                <form action="{{ url_for('promote_user', user_id=user.id) }}" method="POST" style="display: inline;">
+                                                    <button type="submit" class="action-btn promote-btn" title="Make Admin">
+                                                        <i class="fas fa-arrow-up"></i>
+                                                    </button>
+                                                </form>
+                                                {% elif user.role.name == 'Admin' %}
+                                                <form action="{{ url_for('demote_user', user_id=user.id) }}" method="POST" style="display: inline;">
+                                                    <button type="submit" class="action-btn demote-btn" title="Demote to User">
+                                                        <i class="fas fa-arrow-down"></i>
+                                                    </button>
+                                                </form>
+                                                {% endif %}
+                                                <form action="{{ url_for('delete_user', user_id=user.id) }}" method="POST" style="display: inline;">
+                                                    <button type="submit" class="action-btn delete-btn" title="Delete" onclick="return confirm('Are you sure you want to delete this user?');">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        {% else %}
+                                            <span class="text-muted">Current User</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>System Information</h4>
+                </div>
+                <div class="card-body">
+                    <p>Welcome to the Admin Dashboard.</p>
+                    <p>Here you can manage users and view system logs.</p>
+                    <a href="{{ url_for('admin_logs') }}" class="btn btn-info"><i class="fas fa-file-alt me-2"></i>View System Logs</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Section: Pending Admin Requests -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h4>Pending Admin Requests</h4>
+                </div>
+                <div class="card-body">
+                    {% if pending_admin_requests %}
+                        <ul class="list-group">
+                            {% for u in pending_admin_requests %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ u.username }}</strong> ({{ u.email }}) wants to become an admin.
+                                    </div>
+                                    <a href="{{ url_for('approve_admin', user_id=u.id) }}" class="btn btn-sm btn-success">
+                                        Approve <i class="fas fa-check"></i>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted mb-0">No admin requests at the moment.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.action-btn:hover::before {
+    transform: translateY(0);
+}
+
+.action-btn i {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease;
+}
+
+.action-btn:hover i {
+    transform: scale(1.1);
+}
+
+.edit-btn {
+    background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2);
+}
+
+.promote-btn {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.demote-btn {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+}
+
+.delete-btn {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+</style>
+
+<script>
+document.getElementById('searchInput').addEventListener('input', function() {
+    const searchValue = this.value.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr');
+
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchValue) ? '' : 'none';
+    });
+});
+</script>
+{% endblock %}

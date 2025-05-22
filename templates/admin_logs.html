@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Logs{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>System Logs</h2>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Login Logs</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User ID</th>
+                            <th>Timestamp</th>
+                            <th>IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in login_logs %}
+                        <tr>
+                            <td>{{ log.id }}</td>
+                            <td>{{ log.user_id }}</td>
+                            <td>{{ log.timestamp }}</td>
+                            <td>{{ log.ip_address }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h4>Audit Logs</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User ID</th>
+                            <th>Action</th>
+                            <th>IP Address</th>
+                            <th>User Agent</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in audit_logs %}
+                        <tr>
+                            <td>{{ log.id }}</td>
+                            <td>{{ log.user_id }}</td>
+                            <td>{{ log.action }}</td>
+                            <td>{{ log.ip_address }}</td>
+                            <td>{{ log.user_agent }}</td>
+                            <td>{{ log.timestamp }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %} 

@@ -1,0 +1,7 @@
+<h2>Scan QR Code with Google Authenticator</h2>
+<img src="data:image/png;base64,{{ qr_code }}" alt="QR Code">
+<p>After scanning, enter the code below:</p>
+<form action="{{ url_for('verify_2fa') }}" method="post">
+    <input type="text" name="token" placeholder="Enter 6-digit token" required>
+    <button type="submit">Verify</button>
+</form>

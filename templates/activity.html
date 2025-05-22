@@ -1,0 +1,47 @@
+<!-- activity.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Welcome, {{ username }}!</h2>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs">
+        
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="{{ url_for('activity') }}">Activity</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('home') }}">get back</a>
+        </li>
+    </ul>
+
+    <!-- Activity Content -->
+    <div class="card mt-3">
+        <div class="card-body">
+            <h5 class="card-title">Your Activity</h5>
+            <div class="list-group">
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">Logged in</h6>
+                        <small>Just now</small>
+                    </div>
+                    <p class="mb-1">Successful login from your device</p>
+                </div>
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">Profile updated</h6>
+                        <small>2 days ago</small>
+                    </div>
+                    <p class="mb-1">Changed your profile picture</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
